@@ -5,7 +5,7 @@ import torch.utils.data as Data
 
 from torch import nonzero
 
-def find_one_zero(RS):01
+def find_one_zero(RS):
     one_postive = np.argwhere(RS == 1)
     one_postive = np.array(one_postive)
     np.random.shuffle(one_postive)
@@ -17,7 +17,7 @@ def find_one_zero(RS):01
     return one_postive, zero_postive
 
 
-def index_dp(A, k):01
+def index_dp(A, k):
     index_drug_p = np.transpose(np.nonzero(A))
     np.random.shuffle(index_drug_p)
     data_1 = np.array_split(index_drug_p, k, 0)
@@ -30,7 +30,7 @@ def index_dp(A, k):01
 
 
 
-def Split_data(data_1, data_0, fold, k, drug_p):01
+def Split_data(data_1, data_0, fold, k, drug_p):
     X_train = []  
     Y_train = []
     X_test = []
@@ -69,7 +69,7 @@ def Split_data(data_1, data_0, fold, k, drug_p):01
 
     return X_train, X_test, X_t
 
-def load_data(id, BATCH_SIZE, RS):01
+def load_data(id, BATCH_SIZE, RS):
     x = []
     y = []
     for j in range(id.shape[0]):  
@@ -96,7 +96,7 @@ def load_data(id, BATCH_SIZE, RS):01
 
 
 
-def Preproces_Data(RS, test_id):01
+def Preproces_Data(RS, test_id):
     copy_RS = RS / 1
     for i in range(test_id.shape[0]):
         x = int(test_id[i][0])

@@ -11,7 +11,7 @@ import datetime
 import os
 import time
 import sys
-from tools import fold_5, curve, calculate_TPR_FPR, calculate_AUC_AUPR, EarlyStopping, caculate_TPR_FPR_my, curve_my
+from tools import  EarlyStopping
 sys.path.append("..")
 import data_loader
 
@@ -508,59 +508,4 @@ for test in range(5):
     e_time = time.time() - s_time
     print('Testing complete in {:.0f}m {:.0f}s'.format(e_time // 60, e_time % 60))
     print('cor_num:{}'.format(num_cor))
-    np.savetxt(result_file+"test_out_" + str(test) + ".txt", o)
     print("Test finish！")
-
-    # ###################B##########################
-   
-    B = np.array(torch.Tensor.cpu(RS)) / 1
-    for i in range(train_data.shape[0]):
-        B[int(train_data[i][0])][int(train_data[i][1])] = -1
-   
-    test_out = np.loadtxt(result_file+"test_out_" + str(test) + ".txt")
-    np.savetxt(result_file+"B" + str(test) + ".txt", B)
-    
-    ##########################R#############################################
-    
-    R = np.zeros(shape=(RS.shape[0], RS.shape[1]))  
-
-    for i in range(train_data.shape[0]):
-        R[int(train_data[i][0])][int(train_data[i][1])] = -1
-
-    for i in range(test_data.shape[0]):
-        R[int(test_data[i][0])][int(test_data[i][1])] = test_out[i][1]
-    np.savetxt(result_file+"R" + str(test) + ".txt", R)
-    
-    ###########################f##############################
-    
-    f = np.zeros(shape=(R.shape[0], 1))
-    for i in range(R.shape[0]):
-        f[i] = np.sum(R[i] > (-1))
-    np.savetxt(result_file+"f" + str(test) + ".txt", f)
-    t_endtime = time.time() - starttime
-    print('complete in {:.0f}m {:.0f}s'.format(t_endtime // 60, t_endtime % 60))
-
-    TPR, FPR, P = caculate_TPR_FPR_my(R, f, B)
-    MIN = min(MIN, int(len(TPR)))
-    TPR_ALL.append(TPR)
-    FPR_ALL.append(FPR)
-    P_ALL.append(P)
-    np.savetxt(result_file+"TPR" + str(test) + ".txt", TPR)
-    np.savetxt(result_file+"FPR" + str(test) + ".txt", FPR)
-    np.savetxt(result_file+"P" + str(test) + ".txt", P)
-    
-    print("#######result#######")
-    
-    strin = result_file+"Plt_in_" + str(test) + ".png"
-    curve_my(TPR, FPR, P, strin)
-    
-Rh, labelh = [], []
-path = result_file+"Plt.png"
-for i in range(5):
-    tlh = np.loadtxt(result_file+"B%d.txt" % i)
-    trh = np.loadtxt(result_file+"R%d.txt" % i)
-    Rh.append(trh)
-    labelh.append(tlh)
-end_time = time.time() - starttime
-print('complete in {:.0f}m {:.0f}s'.format(end_time // 60, end_time % 60))
-calculate_AUC_AUPR(Rh, labelh, path)
